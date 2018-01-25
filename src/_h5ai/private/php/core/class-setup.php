@@ -95,6 +95,16 @@ class Setup {
             $script_name = preg_replace('#^.*?//#', '/', $script_name);
         }
 
+
+        // HTTP_HOST for *.feralhosting
+        if ($_SERVER['HTTP_X_HOST'] != $_SERVER['HTTP_HOST']){
+            $xproxy = "/" . getenv("USER");
+        } else {
+            $xproxy = '';
+        }
+
+        $this->set('H5AI_HREF', $xproxy . Util::normalize_path(dirname(dirname($script_name)), true));
+
         $this->set('H5AI_HREF', Util::normalize_path(dirname(dirname($script_name)), true));
         $this->set('H5AI_PATH', Util::normalize_path(dirname(dirname(dirname(dirname(__FILE__)))), false));
 

@@ -2,3 +2,6 @@ build
 local
 node_modules
 npm-debug.log
+h5ai.iml
+.idea
+package-lock.json
