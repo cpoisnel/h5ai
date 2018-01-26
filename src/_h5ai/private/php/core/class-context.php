@@ -61,6 +61,10 @@ class Context {
     }
 
     public function is_api_request() {
+        $action = $this->request->query('action','');
+        if ($action ==='download') {
+                return true;
+        }
         return strtolower($this->setup->get('REQUEST_METHOD')) === 'post';
     }
 
