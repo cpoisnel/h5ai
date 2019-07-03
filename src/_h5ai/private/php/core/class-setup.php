@@ -95,7 +95,17 @@ class Setup {
             $script_name = preg_replace('#^.*?//#', '/', $script_name);
         }
 
-        $this->set('H5AI_HREF', Util::normalize_path(dirname(dirname($script_name)), true));
+
+        // HTTP_HOST for *.feralhosting
+
+        if (array_key_exists('HTTP_X_HOST', $_SERVER) && $_SERVER['HTTP_X_HOST'] != $_SERVER['HTTP_HOST']){
+            $xproxy = "/" . getenv("USER");
+        } else {
+            $xproxy = '';
+        }
+
+        $this->set('H5AI_HREF', $xproxy . Util::normalize_path(dirname(dirname($script_name)), true));
+
         $this->set('H5AI_PATH', Util::normalize_path(dirname(dirname(dirname(dirname(__FILE__)))), false));
 
         $this->set('ROOT_HREF', Util::normalize_path(dirname($this->get('H5AI_HREF')), true));

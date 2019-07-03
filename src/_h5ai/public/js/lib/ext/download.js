@@ -13,7 +13,9 @@ const settings = Object.assign({
 }, allsettings.download);
 const tpl =
         `<div id="download" class="tool">
-            <img src="${resource.image('download')}" alt="download"/>
+            <a href="#" title="Download file or directory (as archive)" download>
+                <img src="${resource.image('download')}" alt="download"/>
+            </a>
         </div>`;
 let selectedItems = [];
 let $download;
@@ -22,13 +24,43 @@ let $download;
 const onSelection = items => {
     selectedItems = items.slice(0);
     if (selectedItems.length) {
+
+        const type = settings.type;
+        let name = settings.packageName;
+        const extension = type === 'shell-zip' ? 'zip' : 'tar';
+
+
+        if (!name) {
+            if (selectedItems.length === 1) {
+                name = selectedItems[0].label;
+            } else {
+                name = location.getItem().label;
+            }
+        }
+        let filename = name+'.'+extension;
+
+
+        // Add download link on href
+        let link = '?action=download&as=' + filename;
+        link += '&type='+encodeURIComponent(type);
+        link += '&baseHref='+encodeURIComponent(location.getAbsHref());
+
+
+        each(selectedItems, (item, idx) => {
+            link += '&' + encodeURIComponent('hrefs['+ idx+ ']') + '=' + encodeURIComponent(item.absHref);
+        });
+
+        $download.children()[0].href=link;
+        $download.children()[0].download=filename;
         $download.show();
     } else if (!settings.alwaysVisible) {
         $download.hide();
     }
 };
 
-const onClick = () => {
+const onClick = (e) => {
+
+    e.preventDefault();
     const type = settings.type;
     let name = settings.packageName;
     const extension = type === 'shell-zip' ? 'zip' : 'tar';
